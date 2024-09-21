@@ -1,0 +1,4 @@
+spring.application.name=sample1
+db=jdbc:mysql://localhost/mysql?enabledTLSProtocols=TLSv1.2
+user=root
+password=root

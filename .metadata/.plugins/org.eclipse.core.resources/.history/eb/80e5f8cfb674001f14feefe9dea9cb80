@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+    <STAFF ID="11" NAME="John" AGE="30"/>
+    <STAFF ID="12" NAME="Jane" AGE="25"/>
+</dataset>

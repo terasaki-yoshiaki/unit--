@@ -1,0 +1,28 @@
+package com.example.demo.sample1.Model.DAO;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.example.demo.sample1.Model.DTO.sample1DTO;
+
+public class sample1DAO {
+	
+	private Connection con = null;
+	/**
+	 * DBに接続する処理	
+	 */
+	public void connect() {
+		try {
+			// DBに接続
+			con = Database.getConnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public List<sample1DTO> select() {
+		
+		return null;
+	}
+
+}

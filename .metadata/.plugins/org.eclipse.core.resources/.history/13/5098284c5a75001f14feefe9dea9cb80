@@ -1,0 +1,60 @@
+package com.example.demo.sample1.Controller;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.example.demo.sample1.Model.DAO.sample1DAO;
+import com.example.demo.sample1.Model.DTO.sample1DTO;
+
+@WebMvcTest(insertController.class)
+public class insertControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Mock
+    private sample1DAO dao;
+
+    @InjectMocks
+    private insertController controller;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void testInsertForm() throws Exception {
+        // モックの動作を設定
+        doNothing().when(dao).insert(any(sample1DTO.class));
+
+        mockMvc.perform(post("/si")
+                .param("name", "John") // フォームのname属性に合わせる
+                .param("age", "30")) // フォームのage属性に合わせる
+                .andExpect(view().name("index.html"))
+                .andExpect(model().attributeExists("staff"));
+
+        // モックの検証
+        sample1DTO dto = new sample1DTO();
+        dto.setName("John");
+        dto.setAge(30);
+        verify(dao, times(1)).insert(dto); // insertメソッドが1回呼ばれたことを確認
+    }
+
+    @Test
+    public void testIndex() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(view().name("insert.html"));
+    }
+}

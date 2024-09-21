@@ -1,0 +1,38 @@
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.excel.XlsDataSet;
+import org.dbunit.ext.mysql.MySqlMetadataHandler;
+import org.dbunit.operation.DatabaseOperation;
+import org.junit.jupiter.api.Test;
+public class InsertTest {
+	  String url = "jdbc:mysql://localhost:3306";
+	  String user = "testUser";
+	  String password = "testPass";
+	  @Test
+	  public void insertTest() throws Exception {
+	    Connection conn = DriverManager.getConnection(url, user, password);
+	    IDatabaseConnection dbconn = new DatabaseConnection(conn, "test");
+	    DatabaseConfig config = dbconn.getConfig();
+	    config.setProperty(DatabaseConfig.PROPERTY_METADATA_HANDLER, new MySqlMetadataHandler());
+	    
+	    IDataSet dataset = new XlsDataSet(new File("data/insert.xlsx"));
+	    DatabaseOperation.CLEAN_INSERT.execute(dbconn, dataset);
+	    IDataSet expectedDataSet = new XlsDataSet(new File("data/expected.xlsx"));
+	    ITable expectedTable = expectedDataSet.getTable("animal");
+	    
+	    IDataSet actualDataSet = dbconn.createDataSet();
+	    ITable actualTable = actualDataSet.getTable("animal");
+	    assertEquals(expectedTable, actualTable);
+	  }
+	}

@@ -1,0 +1,14 @@
+package com.example.demo.sample1.Controller;
+
+//@Controller
+//@SessionAttributes
+////public class indexController {
+
+//	sample1DAO dao = new sample1DAO();
+//	@GetMapping("")
+//	public String index(Model model) {
+//	List<sample1DTO> list = dao.select();
+//	model.addAttribute("staff",list);
+//	return "index.html";
+//}
+//}

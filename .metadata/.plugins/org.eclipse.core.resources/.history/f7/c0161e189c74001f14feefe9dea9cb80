@@ -1,0 +1,31 @@
+package com.example.demo.sample1.Controller;
+
+import java.util.List;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.example.demo.sample1.Model.DAO.sample1DAO;
+import com.example.demo.sample1.Model.DTO.sample1DTO;
+
+@Controller
+public class insertController {
+
+	
+	sample1DAO dao = new sample1DAO();
+	
+	@PostMapping("/si")
+	public String insertform(@ModelAttribute sample1DTO dto, Model model) {
+		if(dto == null) {
+			return "insert.html";
+		} else {
+			sample1DAO sample1DAO = new sample1DAO();
+			sample1DAO.insert(dto);
+			List<sample1DTO> list = dao.select();
+			model.addAttribute("staff",list);
+			return "index.html";
+		}
+	}
+}

@@ -1,0 +1,4 @@
+spring.application.name=sample1
+db=jdbc:musql://localhost/sample1?enabledTLSProtocols=TLSv1.2
+user=root
+password=root

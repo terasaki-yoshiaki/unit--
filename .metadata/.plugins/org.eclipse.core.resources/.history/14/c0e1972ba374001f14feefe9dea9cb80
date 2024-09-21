@@ -1,0 +1,63 @@
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+import org.dbunit.DatabaseTestCase;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.operation.DatabaseOperation;
+
+public class StaffTableTest extends DatabaseTestCase {
+
+    // データベース接続を取得
+    @Override
+    protected IDatabaseConnection getConnection() throws Exception {
+        // JDBCの接続情報
+        Connection jdbcConnection = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/your_database_name", // データベース名に置き換える
+            "username", // ユーザー名に置き換える
+            "password"  // パスワードに置き換える
+        );
+        return new DatabaseConnection(jdbcConnection);
+    }
+
+    // 初期データセットを定義
+    @Override
+    protected IDataSet getDataSet() throws Exception {
+        return new FlatXmlDataSetBuilder().build(
+            getClass().getClassLoader().getResourceAsStream("staff_initial_data.xml")
+        );
+    }
+
+    // テスト前に初期データを挿入
+    @Override
+    protected DatabaseOperation getSetUpOperation() throws Exception {
+        return DatabaseOperation.CLEAN_INSERT;
+    }
+
+    // テスト後のクリーンアップ
+    @Override
+    protected DatabaseOperation getTearDownOperation() throws Exception {
+        return DatabaseOperation.NONE;
+    }
+
+    // テストメソッド
+    public void testStaffTable() throws Exception {
+        IDatabaseConnection connection = getConnection();
+
+        // STAFFテーブルのデータを取得
+        ITable actualTable = connection.createQueryTable("STAFF",
+            "SELECT * FROM STAFF");
+
+        // 実際のテーブルと期待するデータが一致するか確認
+        ITable expectedTable = getDataSet().getTable("STAFF");
+
+        // テストのアサーション
+        assertEquals(expectedTable.getRowCount(), actualTable.getRowCount());
+    }
+}

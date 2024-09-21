@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dataset>
+    <staff TABLE="sample1.staff" ID="11" NAME="John" AGE="30"/>
+    <staff TABLE="sample1.staff" ID="12" NAME="Jane" AGE="25"/>
+</dataset>

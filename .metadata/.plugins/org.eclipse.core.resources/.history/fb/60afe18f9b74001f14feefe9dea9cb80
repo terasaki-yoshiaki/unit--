@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert form</title>
+</head>
+<body>
+<h1>スタッフ情報登録</h1>	
+	<form action="?" method="post">
+	<table border="1" class="design08" style="text-align:center" id="center">
+				<tr>	
+					<th>指名</th>
+        			<th>年齢</th>
+        			
+        			</tr>
+      			<form action="?" method="post" th:object="${param}">
+					<td><label for="select"></label>
+			  	       <input type="date" name="TradingDate"  class="textbox" id="TradingDate"  required></td>
+        			<td><input type="text" class="textbox" id="ProductName" name="ProductName" required></td>
+        			
+        		</form>
+  		</table><br/>
+	</form>
+      			<td><input type="submit"   value="登録する"  formaction="/ci"></td>
+</body>
+</html>

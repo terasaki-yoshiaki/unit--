@@ -1,0 +1,15 @@
+package com.example.demo.sample1.Model.DTO;
+
+public class sample1DTO {
+
+	
+	
+	@Data
+	public class sample1 {
+		private int ID;
+		private String Name;
+		private int Age;	
+		}
+	
+	
+}

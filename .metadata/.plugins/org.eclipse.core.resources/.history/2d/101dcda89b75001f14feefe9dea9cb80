@@ -1,0 +1,83 @@
+package com.example.demo;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+import org.dbunit.DatabaseTestCase;
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.mysql.MySqlMetadataHandler;
+import org.dbunit.operation.DatabaseOperation;
+import org.junit.Test;
+import org.springframework.transaction.annotation.Transactional;
+
+
+
+public class inserttest extends DatabaseTestCase {
+
+    private IDataSet backupDataSet; // 元のデータをバックアップするための変数
+
+    @Override
+    protected IDatabaseConnection getConnection() throws Exception {
+        Connection jdbcConnection = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/sample1", // データベース名
+            "root", // ユーザー名
+            "root"  // パスワード
+        );
+        IDatabaseConnection con = new DatabaseConnection(jdbcConnection, "sample1");
+        con.getConfig().setProperty(DatabaseConfig.PROPERTY_METADATA_HANDLER, new MySqlMetadataHandler());
+        return con;
+    }
+    
+    
+    @Override
+    protected void setUp() throws Exception {
+        IDatabaseConnection connection = getConnection();
+        
+        // "staff" テーブルをバックアップ
+        backupDataSet = connection.createDataSet(new String[] { "staff" });
+
+        // 親クラスのsetUp()を呼び出して、テスト用データの挿入を行う
+        super.setUp();
+    }
+
+    @Override
+    protected IDataSet getDataSet() throws Exception {
+        return new FlatXmlDataSetBuilder().build(
+            getClass().getClassLoader().getResourceAsStream("staff_initial_data.xml")
+        );
+    }
+
+    
+
+    @Override
+    
+    protected DatabaseOperation getSetUpOperation() throws Exception {
+        return DatabaseOperation.CLEAN_INSERT; // データを追加のみする
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        IDatabaseConnection connection = getConnection();
+
+        // テストデータを削除
+        DatabaseOperation.DELETE_ALL.execute(connection, getDataSet());
+
+        // バックアップデータを元に戻す
+        DatabaseOperation.CLEAN_INSERT.execute(connection, backupDataSet);
+
+        super.tearDown();
+    }
+
+    @Test
+    public void testStaffTable() throws Exception {
+        IDatabaseConnection connection = getConnection();
+        ITable actualTable = connection.createQueryTable("staff", "SELECT * FROM staff");
+        ITable expectedTable = getDataSet().getTable("staff");
+        assertEquals(expectedTable.getRowCount(), actualTable.getRowCount());
+    }
+}
